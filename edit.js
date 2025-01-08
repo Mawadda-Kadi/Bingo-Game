@@ -1,7 +1,10 @@
+console.log("JavaScript is running!"); // Debug
 // --------------------- VARIABLES
 
-let card = null; // The current Bingo card
-const drawnNumbers = new Set(); // Store drawn numbers
+const gameState = {
+    card: null, // The current Bingo card
+    drawnNumbers: new Set(), // Store drawn numbers
+};
 
 
 // --------------------- EVENT LISTENERS
@@ -12,10 +15,10 @@ document.getElementById("draw-button").addEventListener("click", () => {
         document.getElementById("drawn-number").textContent = "Game Over: All numbers drawn!";
         return;
     }
-    document.getElementById("drawn-number").textContent = `Number drawn: ${ number }`;  // Display number
-    markCard(card, number); // Mark the number on the card
+    document.getElementById("drawn-number").textContent = `Number drawn: ${number}`;  // Display number
+    markCard(gameState.card, number); // Mark the number on the card
 
-    // Check if the card has a winning condition
+    // Check for a win
     if (checkWin()) {
         document.getElementById("drawn-number").textContent = "BINGOOO! You Win";
         document.getElementById("draw-button").disabled = true; // Disable further draw
@@ -40,6 +43,7 @@ function generateBingoCard() {
         if (col === 2) columnNumbers[2] = "FREE"; // Assign "FREE" to the center square (third col and third row)
         card.push(columnNumbers); // Add the column to the card
     }
+    console.log("Generated Bingo Card:", card); // Debug
     return card; // Return the completed Bingo card
 }
 
@@ -64,6 +68,7 @@ function renderBingoCard(card) {
         for (let col = 0; col < 5; col++) {   // Loop through 5 columns in each row
             const td = document.createElement("td"); // Make a "box" for each number
             td.textContent = card[col][row]; // Put the number in the box
+            td.setAttribute("data-number", card[col][row]); // Add a data attribute for easy matching
             if (card[col][row] === "FREE") td.classList.add("marked"); // Mark "FREE" space
             tr.appendChild(td); // Add the box to the row
         }
@@ -77,24 +82,27 @@ function renderBingoCard(card) {
 
 // Draw a Random Number
 function drawNumber() {
-    if (drawnNumbers.size >= 75) return null; // Stop if all numbers are drawn
+    if (gameState.drawnNumbers.size >= 75) return null; // Stop if all numbers are drawn
 
     let number;
     do {
         number = Math.floor(Math.random() * 75) + 1; // Generate a random number between 1 to 75
-    } while (drawnNumbers.has(number)); // Repeat if the number is already drawn to avoid repetation
+    } while (gameState.drawnNumbers.has(number)); // Repeat if the number is already drawn to avoid repetation
 
-    drawnNumbers.add(number); // Add the number to the set
+    gameState.drawnNumbers.add(number); // Add the number to the set
     return number; // Return the drawn number
 }
 
 
 // Mark the Card
-function markCard(card, number) {
-    const cells = document.querySelectorAll("td"); // Get all cells
+function markCard(number) {
+    console.log(`Marking number: ${number}`); // Debug
+    const cells = document.querySelectorAll("td[data-number]"); // Get all cells
     cells.forEach(cell => { // loop through all td cells
-        if (cell.textContent == number) { // Check if the number matches
+        console.log(`Checking cell: ${cell.textContent}`); // Debug
+        if (cell.getAttribute("data-number") == number) { // Match drawn number to cell content
             cell.classList.add("marked"); // Mark the cell
+            console.log(`Marked cell: ${cell.getAttribute("data-number")}`); // Debug
         }
     });
 }
@@ -108,12 +116,14 @@ function isCellMarked(number) {
             return true;
         }
     }
+    console.log(`Cell ${number} is NOT marked.`); // Debug
     return false;
 }
 
 
 // Check if any raw is a winner
 function checkRows() {
+    const card = gameState.card;
     for (let row = 0; row < 5; row++) {
         let isWinningRow = true;
         for (let col = 0; col < 5; col++) {
@@ -130,6 +140,7 @@ function checkRows() {
 
 // Check if any columns is a winner
 function checkColumns() {
+    const card = gameState.card;
     for (let col = 0; col < 5; col++) {
         let isWinningColumn = true;
         for (let row = 0; row < 5; row++) {
@@ -146,6 +157,7 @@ function checkColumns() {
 
 // Check if any diagnals is a winner
 function checkDiagonals() {
+    const card = gameState.card;
     let isWinningDiagnol1 = true; // For the first diagonal (top-left to bottom-right)
     let isWinningDiagnol2 = true; // For the second diagonal (top-right to bottom-left)
     for (let i = 0; i < 5; i++) { // Loop through each diagonal position
@@ -167,17 +179,36 @@ function checkDiagonals() {
 
 
 // Check for Winning Conditions
-function checkWin(card) {
-    if (checkRows(card)) return true;   // If a row wins, stop and return true
-    if (checkColumns(card)) return true; // If a column wins, stop and return true
-    if (checkDiagonals(card)) return true; // If a diagonal wins, stop and return true
-    return false; // If none of the above returned true, then return false
+function checkWin() {
+    console.log("Checking rows..."); // Debug
+    if (checkRows()) {
+        console.log("Winning row found!"); // Debug
+        return true;
+    }
+
+    console.log("Checking columns..."); // Debug
+    if (checkColumns()) {
+        console.log("Winning column found!"); // Debug
+        return true;
+    }
+
+    console.log("Checking diagonals..."); // Debug
+    if (checkDiagonals()) {
+        console.log("Winning diagonal found!"); // Debug
+        return true;
+    }
+
+    console.log("No winning conditions met."); // Debug
+    return false;
+
 }
 
 
 // Initialize Game
 function startGame() {
-    card = generateBingoCard(); // Create the card
+    const card = generateBingoCard(); // Create the card
+    gameState.card = card; // Store the card in gameState
+    console.log("Initialized gameState.card:", gameState.card); // Debug
     renderBingoCard(card); // Render the card on the screen
 }
 
