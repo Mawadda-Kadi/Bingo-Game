@@ -17,8 +17,14 @@ document.getElementById("draw-button").addEventListener("click", () => {
 
     // Check if the card has a winning condition
     if (checkWin()) {
-        document.getElementById("drawn-number").textContent = "BINGOOO! You Win";
         document.getElementById("draw-button").disabled = true; // Disable further draw
+    }
+
+    // Display winning numbers
+    const winningNumbers = checkWin(); // Get the winning numbers from checkWin()
+    if (winningNumbers) {
+        document.getElementById("drawn-number").innerHTML =
+            `BINGOOO! You win!<br>Winning numbers: ${winningNumbers.join(", ")}`;
     }
 });
 
@@ -116,15 +122,19 @@ function isCellMarked(number) {
 function checkRows() {
     for (let row = 0; row < 5; row++) {
         let isWinningRow = true;
+        const winningNumbers = [];
         for (let col = 0; col < 5; col++) {
-            if (card[col][row] !== "FREE" && !isCellMarked(card[col][row])) {
+            const number = card[col][row];
+            if (number === "FREE" || isCellMarked(number)) {
+                winningNumbers.push(number);
+            } else {
                 isWinningRow = false;
                 break;
             }
         }
-        if (isWinningRow) return true;
+        if (isWinningRow) return winningNumbers;
     }
-    return false;
+    return null;
 }
 
 
@@ -132,46 +142,66 @@ function checkRows() {
 function checkColumns() {
     for (let col = 0; col < 5; col++) {
         let isWinningColumn = true;
+        const winningNumbers = [];
         for (let row = 0; row < 5; row++) {
-            if (card[col][row] !== "FREE" && !isCellMarked(card[col][row])) {
+            const number = card[col][row];
+            if (number === "FREE" || isCellMarked(number)) {
+                winningNumbers.push(number);
+            } else {
                 isWinningColumn = false;
                 break;
             }
         }
-        if (isWinningColumn) return true;
+        if (isWinningColumn) return winningNumbers;
     }
-    return false;
+    return null;
 }
 
 
 // Check if any diagnals is a winner
 function checkDiagonals() {
-    let isWinningDiagnol1 = true; // For the first diagonal (top-left to bottom-right)
-    let isWinningDiagnol2 = true; // For the second diagonal (top-right to bottom-left)
-    for (let i = 0; i < 5; i++) { // Loop through each diagonal position
+    const winningNumbers1 = []; // For the first diagonal (top-left to bottom-right)
+    const winningNumbers2 = []; // For the second diagonal (top-right to bottom-left)
 
+    let isWinningDiagonal1 = true;
+    let isWinningDiagonal2 = true;
+
+    for (let i = 0; i < 5; i++) {
         // Check the first diagonal
-        if (card[i][i] !== "FREE" && !isCellMarked(card[i][i])) {
-            isWinningDiagnol1 = false;
+        const number1 = card[i][i];
+        if (number1 === "FREE" || isCellMarked(number1)) {
+            winningNumbers1.push(number1);
+        } else {
+            isWinningDiagonal1 = false;
         }
 
         // Check the second diagonal
-        if (card[4 - i][i] !== "FREE" && !isCellMarked(card[4 - i][i])) {
-            isWinningDiagnol2 = false;
+        const number2 = card[4 - i][i];
+        if (number2 === "FREE" || isCellMarked(number2)) {
+            winningNumbers2.push(number2);
+        } else {
+            isWinningDiagonal2 = false;
         }
-
     }
-    // Return true if any diagonal is a winner
-    return isWinningDiagnol1 || isWinningDiagnol2;
+
+    if (isWinningDiagonal1) return winningNumbers1;
+    if (isWinningDiagonal2) return winningNumbers2;
+    return null;
 }
 
 
 // Check for Winning Conditions
-function checkWin(card) {
-    if (checkRows(card)) return true;   // If a row wins, stop and return true
-    if (checkColumns(card)) return true; // If a column wins, stop and return true
-    if (checkDiagonals(card)) return true; // If a diagonal wins, stop and return true
-    return false; // If none of the above returned true, then return false
+function checkWin() {
+    const winningRow = checkRows();
+    if (winningRow) return winningRow;
+
+    const winningColumn = checkColumns();
+    if (winningColumn) return winningColumn;
+
+    const winningDiagonal = checkDiagonals();
+    if (winningDiagonal) return winningDiagonal;
+
+    return null;
 }
 
 
