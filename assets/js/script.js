@@ -1,3 +1,4 @@
+console.log("JavaScript is running!"); // Debug
 // --------------------- VARIABLES
 
 const gameState = {
@@ -16,6 +17,12 @@ document.getElementById("draw-button").addEventListener("click", () => {
     }
     document.getElementById("drawn-number").textContent = `Number drawn: ${number}`;  // Display number
     markCard(gameState.card, number); // Mark the number on the card
+
+    // Check for a win
+    if (checkWin()) {
+        document.getElementById("drawn-number").textContent = "BINGOOO! You Win";
+        document.getElementById("draw-button").disabled = true; // Disable further draw
+    }
 });
 
 
@@ -36,6 +43,7 @@ function generateBingoCard() {
         if (col === 2) columnNumbers[2] = "FREE"; // Assign "FREE" to the center square (third col and third row)
         card.push(columnNumbers); // Add the column to the card
     }
+    console.log("Generated Bingo Card:", card); // Debug
     return card; // Return the completed Bingo card
 }
 
@@ -86,22 +94,106 @@ function drawNumber() {
 
 
 // Mark the Card
-function markCard(card, number) {
+function markCard(number) {
     const cells = document.querySelectorAll("td"); // Get all cells
     cells.forEach(cell => { // loop through all td cells
         if (cell.textContent == number) { // Check if the number matches
             cell.classList.add("marked"); // Mark the cell
+            console.log(`Marked cell with number: ${number}`); // Debug
         }
     });
 }
 
-// Check for Winning Conditions
-function checkWin(card) {
 
+// Check Marked Cells
+function isCellMarked(number) {
+    const cells = document.querySelectorAll("td");
+    for (const cell of cells) {
+        if (cell.textContent == number && cell.classList.contains("marked")) {
+            return true;
+        }
+    }
+    console.log(`Cell ${number} is NOT marked.`); // Debug
+    return false;
 }
 
-// Restrart the Game
-function restartGame() {
+
+// Check if any raw is a winner
+function checkRows() {
+    for (let row = 0; row < 5; row++) {
+        let isWinningRow = true;
+        for (let col = 0; col < 5; col++) {
+            if (gameState.card[col][row] !== "FREE" && !isCellMarked(card[col][row])) {
+                isWinningRow = false;
+                break;
+            }
+        }
+        if (isWinningRow) return true;
+    }
+    return false;
+}
+
+
+// Check if any columns is a winner
+function checkColumns() {
+    for (let col = 0; col < 5; col++) {
+        let isWinningColumn = true;
+        for (let row = 0; row < 5; row++) {
+            if (gameState.card[col][row] !== "FREE" && !isCellMarked(card[col][row])) {
+                isWinningColumn = false;
+                break;
+            }
+        }
+        if (isWinningColumn) return true;
+    }
+    return false;
+}
+
+
+// Check if any diagnals is a winner
+function checkDiagonals() {
+    let isWinningDiagnol1 = true; // For the first diagonal (top-left to bottom-right)
+    let isWinningDiagnol2 = true; // For the second diagonal (top-right to bottom-left)
+    for (let i = 0; i < 5; i++) { // Loop through each diagonal position
+
+        // Check the first diagonal
+        if (gameState.card[i][i] !== "FREE" && !isCellMarked(gameState.card[i][i])) {
+            isWinningDiagnol1 = false;
+        }
+
+        // Check the second diagonal
+        if (gameState.card[4 - i][i] !== "FREE" && !isCellMarked(gameState.card[4 - i][i])) {
+            isWinningDiagnol2 = false;
+        }
+
+    }
+    // Return true if any diagonal is a winner
+    return isWinningDiagnol1 || isWinningDiagnol2;
+}
+
+
+// Check for Winning Conditions
+function checkWin(card) {
+    console.log("Checking rows..."); // Debug
+    if (checkRows(card)) {
+        console.log("Winning row found!"); // Debug
+        return true;
+    }
+
+    console.log("Checking columns..."); // Debug
+    if (checkColumns(card)) {
+        console.log("Winning column found!"); // Debug
+        return true;
+    }
+
+    console.log("Checking diagonals..."); // Debug
+    if (checkDiagonals(card)) {
+        console.log("Winning diagonal found!"); // Debug
+        return true;
+    }
+
+    console.log("No winning conditions met."); // Debug
+    return false;
 
 }
 
@@ -109,6 +201,7 @@ function restartGame() {
 // Initialize Game
 function startGame() {
     const card = generateBingoCard(); // Create the card
+    gameState.card = card; // Store the card in gameState
     renderBingoCard(card); // Render the card on the screen
 }
 
