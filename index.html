@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans&family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
 
 
     <!-- CSS Stylesheet -->
@@ -17,7 +19,7 @@
 </head>
 
 <body>
-    <h1>Bingo Game</h1>
+    <h1>Bingo Card Game</h1>
     <div id="bingo-card"></div>
     <div id="controls">
     <!-- First line -->
@@ -28,7 +30,9 @@
     <!-- Second line -->
     <div style="margin-top: 10px;">
         <p id="drawn-number" style="display: inline;"></p>
-        <button id="speaker-button" style="display: none; margin-left: 10px;">🔊</button>
+        <button id="speaker-button" style="display: none; margin-left: 10px;">
+            <i class="fa-solid fa-microphone"></i>
+        </button>
         <button id="mute-button" style="margin-left: 5px;">🔇</button>
     </div>
 </div>

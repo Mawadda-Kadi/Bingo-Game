@@ -1,15 +1,29 @@
+/* General body styling */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
     margin: 0;
     padding: 20px;
+    background: linear-gradient(to bottom, #f9f9f9, #e6e6e6);
 }
 
+/* Game Header Style */
+h1 {
+    justify-content: center;
+    font-family: 'Rubik Doodle Shadow', sans-serif;
+    font-size: 35px;
+    text-align: center;
+}
+
+/* Table styling for the Bingo card */
 table {
     margin: 20px auto;
     border-collapse: collapse;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 0px 6px 20px rgba(0, 0, 0, 0.1);
 }
 
+
+/* Header and cell styling */
 th,
 td {
     border: 2px solid #333;
@@ -18,24 +32,108 @@ td {
     height: 50px;
     text-align: center;
     font-size: 18px;
+    background-color: #fff;
+    transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
+th {
+    color: #4b1018;
+}
+
+/* Marked cell styling */
 td.marked {
     background-color: #4caf50;
     color: white;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
 }
 
+
+
+/* Controls container styling */
 #controls {
     margin-top: 20px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 20px auto;
+
 }
 
+
+/* Button styling */
 button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(97, 97, 133);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: scale(0.95);
+    box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for the drawn number */
 #drawn-number {
     font-size: 24px;
     margin-top: 20px;
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    table {
+        width: 90%;
+    }
+
+    th,
+    td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    button {
+        font-size: 15px;
+        font-weight: 700;
+        padding: 8px 16px;
+    }
+
+    #drawn-number {
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    #controls {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+
+    th,
+    td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    button {
+        font-size: 13px;
+        font-weight: 700;
+        padding: 6px 12px;
+    }
+
+    #drawn-number {
+        font-size: 13px;
+        font-weight: 700;
+    }
 }
