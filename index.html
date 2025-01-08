@@ -20,9 +20,18 @@
     <h1>Bingo Game</h1>
     <div id="bingo-card"></div>
     <div id="controls">
+    <!-- First line -->
+    <div>
         <button id="draw-button">Draw Number</button>
-        <p id="drawn-number"></p>
     </div>
+
+    <!-- Second line -->
+    <div style="margin-top: 10px;">
+        <p id="drawn-number" style="display: inline;"></p>
+        <button id="speaker-button" style="display: none; margin-left: 10px;">🔊</button>
+        <button id="mute-button" style="margin-left: 5px;">🔇</button>
+    </div>
+</div>
 
     <!-- Script.js -->
     <script src="assets/js/script.js" defer></script>

@@ -1,11 +1,15 @@
 // --------------------- VARIABLES
 
 let card = null; // The current Bingo card
+let lastDrawnNumber = null; // Store the last drawn number
+let isMuted = true; // Mute sound by default
 const drawnNumbers = new Set(); // Store drawn numbers
+
 
 
 // --------------------- EVENT LISTENERS
 
+// Draw Number Button
 document.getElementById("draw-button").addEventListener("click", () => {
     const number = drawNumber(); // Draw a random number
     if (number === null) {  // Check if the game is over
@@ -26,6 +30,22 @@ document.getElementById("draw-button").addEventListener("click", () => {
         document.getElementById("drawn-number").innerHTML =
             `BINGOOO! You win!<br>Winning numbers: ${winningNumbers.join(", ")}`;
     }
+});
+
+
+// Speaker Button
+document.getElementById("speaker-button").addEventListener("click", () => {
+    if (lastDrawnNumber !== null) {
+        speakNumber(lastDrawnNumber); // Speak the last drawn number
+    }
+});
+
+
+// Mute Button
+document.getElementById("mute-button").addEventListener("click", () => {
+    isMuted = !isMuted; // Toggle mute state
+    const muteButton = document.getElementById("mute-button");
+    muteButton.textContent = isMuted ? "🔇" : "🔊"; // Update the button icon
 });
 
 
@@ -81,6 +101,15 @@ function renderBingoCard(card) {
 }
 
 
+// Speak the drawn number
+function speakNumber(number) {
+    if (!isMuted) { // Speak only if not muted
+        const utterance = new SpeechSynthesisUtterance(`Number ${number}`); // Create an utterance
+        window.speechSynthesis.speak(utterance); // Use the Web Speech API to speak the number
+    }
+}
+
+
 // Draw a Random Number
 function drawNumber() {
     if (drawnNumbers.size >= 75) return null; // Stop if all numbers are drawn
@@ -91,6 +120,17 @@ function drawNumber() {
     } while (drawnNumbers.has(number)); // Repeat if the number is already drawn to avoid repetation
 
     drawnNumbers.add(number); // Add the number to the set
+    lastDrawnNumber = number; // Update the last drawn number
+    speakNumber(number); // Speak the number
+
+    // Update the displayed number
+    const drawnNumberElement = document.getElementById("drawn-number");
+    drawnNumberElement.textContent = `Number drawn: ${number}`;
+
+    // Show the speaker button
+    const speakerButton = document.getElementById("speaker-button");
+    speakerButton.style.display = "inline"; // Make the button visible
+
     return number; // Return the drawn number
 }
 
