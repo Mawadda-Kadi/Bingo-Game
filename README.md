@@ -1,6 +1,6 @@
 # Bingo Game Documentation
 
-- Here is the deployed site [Bingo Card Game]()
+- Here is the deployed site [Bingo Card Game](https://mawadda.vercel.app/)
 
 ---
 
